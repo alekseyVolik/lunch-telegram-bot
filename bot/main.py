@@ -9,6 +9,9 @@ from bot.storage.manipulation.user_manipulation import get_user_by_id
 from bot.storage.manipulation.user_manipulation import update_status
 
 from bot.singleton import user_storage
+from bot.singleton import chat_command_register
+
+from bot.enum.chat_commands import ChatCommands
 
 from settings import BOT_TOKEN
 
