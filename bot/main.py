@@ -11,23 +11,19 @@ from bot.storage.manipulation.user_manipulation import update_status
 from bot.singleton import user_storage
 from bot.singleton import chat_command_register
 
-from bot.enum.chat_commands import ChatCommands
+from bot.bot_enum.chat_commands import ChatCommands
 
 from settings import BOT_TOKEN
 
 
+@chat_command_register.register_command(ChatCommands.start)
 def start(update: Update, context: CallbackContext) -> None:
-    starting_message = "Привет! Этот бот создан для совместного похода покушать в приятной компании людей\n\n" \
-                       "Следующие комманды доступны:\n" \
-                       "/sign: позволяет подписаться на бота и получать уведомления о сборе, принимать голосование" \
-                       " в изменение места и времени ланча\n" \
-                       "/unsign: отписаться от бота, функциональность бота становится недоступной\n" \
-                       "/check_in_me: позволяет отметиться как присутствующему в офисе человеку\n" \
-                       "/member_list: список подписавшихся сотрудников со статусом отметки присутсвия " \
-                       "в офисе, формат: (+ или -) Имя [Фамилия]"
+    starting_message = f"Привет! Этот бот создан для совместного похода покушать в приятной компании людей\n\n " \
+                       f"Следующие комманды доступны:\n{chat_command_register.as_string()}"
     context.bot.send_message(chat_id=update.effective_chat.id, text=starting_message)
 
 
+@chat_command_register.register_command(ChatCommands.subscribe)
 def user_sign(update: Update, context: CallbackContext) -> None:
     telegram_user = update.effective_user
     storage_user = get_user_by_id(storage=user_storage, user_id=telegram_user.id)
@@ -50,6 +46,7 @@ def user_sign(update: Update, context: CallbackContext) -> None:
     context.bot.send_message(chat_id=update.effective_chat.id, text=text)
 
 
+@chat_command_register.register_command(ChatCommands.unsubscribe)
 def user_unsign(update: Update, context: CallbackContext) -> None:
     telegram_user = update.effective_user
     storage_user = get_user_by_id(storage=user_storage, user_id=telegram_user.id)
@@ -64,6 +61,7 @@ def user_unsign(update: Update, context: CallbackContext) -> None:
     context.bot.send_message(chat_id=update.effective_chat.id, text=text)
 
 
+@chat_command_register.register_command(ChatCommands.notify_me)
 def user_check(update: Update, context: CallbackContext) -> None:
     telegram_user = update.effective_user
     storage_user = get_user_by_id(storage=user_storage, user_id=telegram_user.id)
@@ -75,6 +73,7 @@ def user_check(update: Update, context: CallbackContext) -> None:
     context.bot.send_message(chat_id=update.effective_chat.id, text=text)
 
 
+@chat_command_register.register_command(ChatCommands.member_list)
 def member_list(update: Update, context: CallbackContext) -> None:
     _member_list = '\n'.join(
         [f'[{"+" if user["check_in"] else "-"}]  '

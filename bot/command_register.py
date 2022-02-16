@@ -1,4 +1,4 @@
-from bot.enum.chat_commands import ChatCommands
+from bot.bot_enum.chat_commands import ChatCommands
 
 
 class ChatCommandRegister:
